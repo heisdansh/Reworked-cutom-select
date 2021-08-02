@@ -6,11 +6,26 @@ export default class Select {
         this.labelElement = document.createElement('span')
         this.optionsCustomElement = document.createElement('ul')
         setupCustomElement(this)
+        element.style.display = "none"
         element.after(this.customElement)
     }
 
     get selectedOption() {
         return this.options.find(option => option.selected)
+    }
+
+    selectValue(value) {
+        const newSelectedOption = this.options.find(option =>{
+            return option.value === value
+        })
+        const prevSelectedOption = this.selectedOption
+        prevSelectedOption.selected = false
+        prevSelectedOption.element.selected = false
+
+        newSelectedOption.selected = true
+        newSelectedOption.element.selected = true
+
+        this.labelElement.innerText = newSelectedOption.label
     }
 }
 function setupCustomElement(select) {
@@ -33,9 +48,19 @@ function setupCustomElement(select) {
         optionElement.classList.toggle(...selected, option.selected)
         optionElement.innerText = option.label
         optionElement.dataset.value = option.value
+        optionElement.addEventListener('click',()=>{
+            select.selectedOption.element.classList.remove(...selected)
+            select.selectValue(option.value)
+            optionElement.classList.add(...selected)
+            select.optionsCustomElement.classList.add('hidden')
+        })
         select.optionsCustomElement.append(optionElement)
     })
     select.customElement.append(select.optionsCustomElement)
+
+    select.labelElement.addEventListener('click',()=>{
+        select.optionsCustomElement.classList.toggle('hidden')
+    })
 }
 
 function getFormattedOptions (optionElements) {
