@@ -49,7 +49,10 @@ function setupCustomElement(select) {
         optionElement.innerText = option.label
         optionElement.dataset.value = option.value
         optionElement.addEventListener('click',()=>{
-            select.selectedOption.element.classList.remove(...selected)
+            select.optionsCustomElement.querySelector(
+            `[data-value="${select.selectedOption.value}"]`
+                ).classList.remove(...selected)
+            //select.selectedOption.element.classList.remove(...selected)
             select.selectValue(option.value)
             optionElement.classList.add(...selected)
             select.optionsCustomElement.classList.add('hidden')
@@ -60,6 +63,10 @@ function setupCustomElement(select) {
 
     select.labelElement.addEventListener('click',()=>{
         select.optionsCustomElement.classList.toggle('hidden')
+    })
+
+    select.customElement.addEventListener("blur",() => {
+        select.optionsCustomElement.classList.remove('hidden')
     })
 }
 
